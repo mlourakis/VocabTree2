@@ -139,11 +139,10 @@ static double vec_normsq(int dim, double *v)
  *                array.  The means should be concatenated into one
  *                long array of length k*dim.
  */
-double compute_means(int n, int dim, int k, unsigned char **v, 
+void compute_means(int n, int dim, int k, unsigned char **v,
                      unsigned int *clustering, double *means_out)
 {
     int i;
-    double max_change = 0.0;
     int *counts = (int *) malloc(sizeof(int) * k);
 
     for (i = 0; i < k * dim; i++)
@@ -169,8 +168,6 @@ double compute_means(int n, int dim, int k, unsigned char **v,
     }
 
     free(counts);
-
-    return max_change;
 }
 
 double compute_error(int n, int dim, int k, unsigned char **v,
@@ -321,7 +318,6 @@ double kmeans(int n, int dim, int k, int restarts, unsigned char **v,
 
     for (i = 0; i < restarts; i++) {
         int j;
-        double max_change = 0.0;
         double error = 0.0;
         int round = 0;
 
@@ -355,8 +351,7 @@ double kmeans(int n, int dim, int k, int restarts, unsigned char **v,
             gettimeofday(&start, NULL);
 
             /* Recompute means */
-            max_change = compute_means(n, dim, k, v, 
-                                       clustering_curr, means_new);
+            compute_means(n, dim, k, v, clustering_curr, means_new);
 
             memcpy(means_curr, means_new, sizeof(double) * dim * k);
 
@@ -369,7 +364,7 @@ double kmeans(int n, int dim, int k, int restarts, unsigned char **v,
             round++;
         } while (changed_pct > changed_pct_threshold);
 
-        max_change = compute_means(n, dim, k, v, clustering_curr, means_new);
+        compute_means(n, dim, k, v, clustering_curr, means_new);
         memcpy(means_curr, means_new, sizeof(double) * dim * k);
 
         if (error < min_error) {

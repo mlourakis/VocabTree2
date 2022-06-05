@@ -253,7 +253,7 @@ int ReadKeys(FILE *fp, short int **keys, keypt_t **info)
         
 	char buf[1024];
 	for (int line = 0; line < 7; line++) {
-	    fgets(buf, 1024, fp);
+	    if (fgets(buf, 1024, fp) == NULL) std::cerr << "Error reading file in ReadKeys()\n";
 
 	    if (line < 6) {
 		sscanf(buf, 

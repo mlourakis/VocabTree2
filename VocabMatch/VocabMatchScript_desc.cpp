@@ -34,7 +34,7 @@ unsigned char *ReadDescriptorFile(const char *desc_file, unsigned int dim,
     }
 
     unsigned int num_points = 0;
-    int nRead = fread(&num_points, sizeof(unsigned int), 1, f);
+    size_t nRead = fread(&num_points, sizeof(unsigned int), 1, f);
     assert(nRead == 1);
 
     if (num_points == 0) {
@@ -43,7 +43,8 @@ unsigned char *ReadDescriptorFile(const char *desc_file, unsigned int dim,
     }
     
     unsigned char *desc = new unsigned char[num_points * dim];
-    fread(desc, sizeof(unsigned char), num_points * dim, f);    
+    nRead = fread(desc, sizeof(unsigned char), num_points * dim, f);
+    if (nRead != (size_t)(num_points * dim)) std::cerr << "Error reading file in ReadDescriptorFile()\n";
 
     fclose(f);
 

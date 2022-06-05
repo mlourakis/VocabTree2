@@ -104,7 +104,7 @@ DLL_API void ann_1_1_char::annUpdateStats()				// update stats with current coun
 }
 
 										// print a single statistic
-static void print_one_stat(char *title, ANNsampStat s, double div)
+static void print_one_stat(const char *title, ANNsampStat s, double div)
 {
 	cout << title << "= [ ";
 	cout.width(9); cout << s.mean()/div			<< " : ";

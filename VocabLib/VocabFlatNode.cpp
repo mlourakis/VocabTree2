@@ -101,7 +101,7 @@ unsigned long VocabTreeFlatNode::
         for (int i = 0; i < NUM_NNS; i++) {
             // printf("dist: %0.3f, w_weight: %0.3f\n", 
             //        (double) distsq[i], w_weight);
-            double w_weight = w_weights[i];
+            //double w_weight = w_weights[i];
             r = m_children[nn_idx[i]]->PushAndScoreFeature(v, index, 
                                                            bf, dim, add);
         }

@@ -101,11 +101,14 @@ int VocabTreeInteriorNode::Read(FILE *f, int bf, int dim)
 {
     char *children = new char[bf];
     float dummy;
+    size_t nr;
+    int nerr = 0;
 
     m_desc = new unsigned char[dim];
-    fread(m_desc, sizeof(unsigned char), dim, f);
-    fread(&dummy, sizeof(float), 1, f);
-    fread(children, sizeof(char), bf, f);
+    nr = fread(m_desc, sizeof(unsigned char), dim, f);  nerr += (nr != (size_t)(dim));
+    nr = fread(&dummy, sizeof(float), 1, f);            nerr += (nr != 1);
+    nr = fread(children, sizeof(char), bf, f);          nerr += (nr != (size_t)(bf));
+    if (nerr) std::cerr << "Error reading file in VocabTreeInteriorNode::Read()\n";
 
     m_children = new VocabTreeNode *[bf];
 
@@ -115,7 +118,8 @@ int VocabTreeInteriorNode::Read(FILE *f, int bf, int dim)
         } else {
             /* Read the interior flag */
             char interior;
-            fread(&interior, sizeof(char), 1, f);
+            nr = fread(&interior, sizeof(char), 1, f);
+            if (nr != 1) std::cerr << "Error reading file in VocabTreeInteriorNode::Read()\n";
 
             if (interior == 1) {
                 m_children[i] = new VocabTreeInteriorNode();
@@ -190,19 +194,24 @@ int VocabTreeLeaf::WriteASCII(FILE *f, int bf, int dim) const {
 
 int VocabTreeLeaf::Read(FILE *f, int bf, int dim)
 {
+    size_t nr;
+    int nerr = 0;
+
     m_desc = new unsigned char[dim];
-    fread(m_desc, sizeof(unsigned char), dim, f);
-    fread(&m_weight, sizeof(float), 1, f);
+    nr = fread(m_desc, sizeof(unsigned char), dim, f);  nerr += (nr != (size_t)(dim));
+    nr = fread(&m_weight, sizeof(float), 1, f);         nerr += (nr != 1);
+    if (nerr) std::cerr << "Error reading file in VocabTreeLeaf::Read()\n";
 
     int num_images;
-    fread(&num_images, sizeof(int), 1, f);
+    nr = fread(&num_images, sizeof(int), 1, f);
 
     m_image_list.resize(num_images);
     for (int i = 0; i < num_images; i++) {
         int img;
         float count;
-        fread(&img, sizeof(int), 1, f);
-        fread(&count, sizeof(float), 1, f);
+        nr = fread(&img, sizeof(int), 1, f);      nerr += (nr != 1);
+        nr = fread(&count, sizeof(float), 1, f);  nerr += (nr != 1);
+        if (nerr) std::cerr << "Error reading file in VocabTreeLeaf::Read()\n";
         m_image_list[i] = ImageCount(img, count);
     }
 
@@ -232,6 +241,8 @@ int VocabTreeLeaf::WriteNode(FILE *f, int bf, int dim) const
 int VocabTree::Read(const char *filename) 
 {
     FILE *f = fopen(filename, "rb");
+    size_t nr;
+    int nerr = 0;
     
     if (f == NULL) {
         printf("[VocabTree::Read] Error opening file %s for reading\n",
@@ -240,15 +251,17 @@ int VocabTree::Read(const char *filename)
     }
 
     /* Read the fields for the tree */
-    fread(&m_branch_factor, sizeof(int), 1, f);
-    fread(&m_depth, sizeof(int), 1, f);
-    fread(&m_dim, sizeof(int), 1, f);    
+    nr = fread(&m_branch_factor, sizeof(int), 1, f);  nerr += (nr != 1);
+    nr = fread(&m_depth, sizeof(int), 1, f);          nerr += (nr != 1);
+    nr = fread(&m_dim, sizeof(int), 1, f);            nerr += (nr != 1);
+    if (nerr) std::cerr << "Error reading file in VocabTree::Read()\n";
     
     m_root = new VocabTreeInteriorNode();
 
     /* Read one byte for the interior field */
     char interior;
-    fread(&interior, sizeof(char), 1, f);
+    nr = fread(&interior, sizeof(char), 1, f); nerr += (nr != 1);
+    if (nerr) std::cerr << "Error reading file in VocabTree::Read()\n";
 
     m_root->Read(f, m_branch_factor, m_dim);
     /* unsigned long next_id = */ m_root->ComputeIDs(m_branch_factor, 0);
