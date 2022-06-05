@@ -353,7 +353,8 @@ class VocabTreeFlatNode : public VocabTreeInteriorNode
 {
 public:
     VocabTreeFlatNode() : VocabTreeInteriorNode()
-    { }
+    { pts = NULL; }
+    ~VocabTreeFlatNode() { if (pts) ann_1_1_char::annDeallocPts(pts); if (m_tree) delete m_tree; }
 
     virtual unsigned long PushAndScoreFeature(unsigned char *v, 
                                               unsigned int index, 
@@ -363,6 +364,7 @@ public:
     void BuildANNTree(int num_leaves, int dim);
 
     ann_1_1_char::ANNkd_tree *m_tree; /* For finding nearest neighbors */
+    ann_1_1_char::ANNpointArray pts;  /* For holding keypoints */
 };
 
 class VocabTree {

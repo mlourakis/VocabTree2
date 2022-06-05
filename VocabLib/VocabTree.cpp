@@ -545,6 +545,12 @@ int VocabTree::Flatten()
     memset(new_root->m_desc, 0, m_dim);
     new_root->m_id = 0;
 
+    // free m_root
+    VocabTreeInteriorNode *i_root = dynamic_cast<VocabTreeInteriorNode*>(m_root);
+    if (i_root && i_root->m_children) delete [] i_root->m_children;
+    if (m_root->m_desc) delete [] m_root->m_desc;
+    delete m_root;
+
     m_root = new_root;
 
     /* Reset the branch factor */

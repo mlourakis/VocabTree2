@@ -334,6 +334,8 @@ int main(int argc, char **argv)
     fclose(f_html);
 #endif
 
+    tree.Clear();
+
     delete [] scores;
     delete [] scores_d;
     delete [] perm;

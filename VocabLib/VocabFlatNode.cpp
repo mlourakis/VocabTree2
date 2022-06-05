@@ -119,7 +119,7 @@ void VocabTreeFlatNode::BuildANNTree(int num_leaves, int dim)
     // unsigned char *desc = new unsigned char[mem_size];
 
     /* Create a new array of points */
-    ANNpointArray pts = annAllocPts(num_leaves, dim);
+    pts = annAllocPts(num_leaves, dim);
 
     unsigned long id = 0;
     FillDescriptors(num_leaves, dim, id, pts[0]);
