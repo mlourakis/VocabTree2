@@ -6,7 +6,7 @@ SET(VOCABLIB_SRCS keys2.cpp kmeans.cpp kmeans_kd.cpp VocabFlatNode.cpp VocabTree
 SET(VOCABLIB_HDRS keys2.h kmeans.h kmeans_kd.h VocabTree.h)
 
 IF(OPENMP_FOUND)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 ENDIF()
 
 ADD_LIBRARY(vocab ${VOCABLIB_SRCS} ${VOCABLIB_HDRS})
